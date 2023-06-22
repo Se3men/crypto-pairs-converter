@@ -1,12 +1,17 @@
-import { Controller, Get } from '@nestjs/common';
+import { Controller, Get, Query } from '@nestjs/common';
 import { AppService } from './app.service';
+import { ApiResponse } from '@nestjs/swagger';
+import { ConvertCurrencyInput, ConvertedCurrency } from './app.dto';
 
-@Controller()
+@Controller({ path: '/currency' })
 export class AppController {
-  constructor(private readonly appService: AppService) {}
+  constructor(private readonly _appService: AppService) {}
 
-  @Get()
-  getHello(): string {
-    return this.appService.getHello();
+  @Get('/convert')
+  @ApiResponse({ type: ConvertedCurrency })
+  async getConvertedCurrency(
+    @Query() dto: ConvertCurrencyInput
+  ): Promise<ConvertedCurrency> {
+    return await this._appService.getConvertedCurrency();
   }
 }
