@@ -1,23 +1,25 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { Transform } from 'class-transformer';
 import {
+  IsEnum,
   IsNotEmpty,
   IsNumber,
   IsOptional,
   IsString,
   Min
 } from 'class-validator';
+import { CryptoCurrency } from './app.types';
 
 export interface IConvertedCurrency {
   amount: number;
-  originalСurrency: string;
-  exchangeCurrency: string;
+  from: string;
+  to: string;
   result: number;
 }
 
 export interface IConvertCurrencyInput {
-  originalСurrency: string;
-  exchangeCurrency?: string;
+  from: string;
+  to?: string;
   amount?: number;
 }
 
@@ -34,12 +36,12 @@ export class ConvertedCurrency implements IConvertedCurrency {
   @ApiProperty({ type: String })
   @IsString()
   @IsNotEmpty()
-  originalСurrency: string;
+  from: string;
 
   @ApiProperty({ type: String })
   @IsString()
   @IsNotEmpty()
-  exchangeCurrency: string;
+  to: string;
 
   @ApiProperty({ type: Number })
   @IsString()
@@ -48,15 +50,19 @@ export class ConvertedCurrency implements IConvertedCurrency {
 }
 
 export class ConvertCurrencyInput implements IConvertCurrencyInput {
-  @ApiProperty({ type: String, default: 'tether', required: false })
-  @IsOptional()
-  @IsString()
-  exchangeCurrency?: string;
-
-  @ApiProperty({ type: String, required: true })
+  @ApiProperty({ enum: CryptoCurrency, required: true })
   @IsNotEmpty()
-  @IsString()
-  originalСurrency: string;
+  @IsEnum(CryptoCurrency)
+  from: CryptoCurrency;
+
+  @ApiProperty({
+    enum: CryptoCurrency,
+    default: CryptoCurrency.tether,
+    required: false
+  })
+  @IsOptional()
+  @IsEnum(CryptoCurrency)
+  to?: CryptoCurrency;
 
   @ApiProperty({ type: Number, default: 1, required: false })
   @IsNumber()

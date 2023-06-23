@@ -12,6 +12,10 @@ export class AppController {
   async getConvertedCurrency(
     @Query() dto: ConvertCurrencyInput
   ): Promise<ConvertedCurrency> {
-    return await this._appService.getConvertedCurrency();
+    return await this._appService.getConvertedCurrency({
+      from: dto.from,
+      to: dto.to,
+      amount: dto.amount
+    });
   }
 }
